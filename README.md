@@ -1,63 +1,75 @@
 # Periodic Table Database
 
-A PostgreSQL-backed database project and shell utility for querying chemical element data. This project was built as part of the freeCodeCamp Relational Database curriculum and includes a normalized periodic table database plus a command-line script to fetch element details by atomic number, symbol, or name.
+A PostgreSQL-backed project that stores periodic table data in a normalized relational schema and exposes it through a small Bash command-line utility.
+
+This repository was created as part of the freeCodeCamp Relational Database curriculum and demonstrates how to design a database, load structured data, and query it using SQL from a shell script.
 
 ## Overview
 
-This project includes:
+The project includes:
 
 - a PostgreSQL database named `periodic_table`
-- normalized tables for elements, properties, and element types
-- a Bash script, `element.sh`, that looks up data from the database
-- validation rules and data cleanup tasks from the freeCodeCamp project requirements
-
-## Features
-
-- Query an element by atomic number, symbol, or name
-- Return detailed element information including:
-  - atomic number
-  - symbol
-  - name
-  - element type
-  - atomic mass
-  - melting point
-  - boiling point
-- Handle invalid or missing inputs with a friendly error message
-- Work with a properly normalized relational database schema
+- normalized tables for element metadata and properties
+- an `element.sh` script for querying elements by atomic number, symbol, or name
+- an SQL dump file that creates the schema and inserts the data
 
 ## Project structure
 
 ```text
 .
-├── periodic_table.sql   # Database dump / schema data
-├── element.sh           # Bash script to query the database
-├── README.md            # Project documentation
-└── .gitignore           # Git metadata (if present in your local repo)
+├── README.md               # Project documentation
+├── element.sh              # Bash script for querying the database
+├── periodic_table.sql      # PostgreSQL schema and data dump
+└── .gitignore              # Git metadata (if present locally)
 ```
+
+## Features
+
+- Query element details by atomic number, symbol, or name
+- Return key properties such as:
+  - atomic number
+  - symbol
+  - element name
+  - category/type
+  - atomic mass
+  - melting point
+  - boiling point
+- Use a normalized relational database design instead of storing all data in a single table
+- Handle missing or invalid inputs with a friendly CLI message
+
+## Prerequisites
+
+Before running the project, make sure you have:
+
+- PostgreSQL installed and running
+- `psql` available in your PATH
+- Bash available on a Unix-like system
 
 ## Database setup
 
-To connect to the database:
+From the project root, restore the provided database dump:
+
+```bash
+psql -U postgres < periodic_table.sql
+```
+
+This creates the `periodic_table` database and loads the schema and sample data.
+
+If you want to connect manually after setup:
 
 ```bash
 psql --username=freecodecamp --dbname=periodic_table
 ```
 
-You can also restore the project database structure and data from the SQL dump:
-
-```bash
-psql -U freecodecamp -d periodic_table < periodic_table.sql
-```
-
 ## Script usage
 
-The script accepts one argument:
+Make the script executable:
 
-- atomic number
-- element symbol
-- element name
+```bash
+chmod +x element.sh
+```
 
-### Examples
+Run it with an atomic number, element symbol, or element name:
 
 ```bash
 ./element.sh 1
@@ -71,7 +83,7 @@ The script accepts one argument:
 The element with atomic number 1 is Hydrogen (H). It's a nonmetal, with a mass of 1.008 amu. Hydrogen has a melting point of -259.1 celsius and a boiling point of -252.9 celsius.
 ```
 
-### No argument
+### Missing or invalid input
 
 ```bash
 ./element.sh
@@ -83,8 +95,6 @@ Output:
 Please provide an element as an argument.
 ```
 
-### Element not found
-
 ```bash
 ./element.sh 999
 ```
@@ -95,40 +105,29 @@ Output:
 I could not find that element in the database.
 ```
 
-## Script behavior
+## Database design
 
-The `element.sh` script performs the following:
+The database is structured using a normalized schema:
+
+- `elements`: stores atomic number, symbol, and name
+- `properties`: stores atomic mass and temperature values
+- `types`: stores element categories such as `nonmetal`, `metal`, and `metalloid`
+
+This separation reduces duplication and keeps the data consistent and maintainable.
+
+## How the script works
+
+The `element.sh` script:
 
 1. checks whether an argument was provided
-2. determines whether the input is an atomic number, element symbol, or name
+2. determines whether the input is a numeric atomic number, symbol, or a name
 3. runs a SQL query against the `periodic_table` database
-4. prints the matching element details
-5. returns a clear error when no matching element exists
+4. prints the matching element information
+5. returns a clear error when no match is found
 
-## Database design notes
+## Validation
 
-The database is normalized to include separate tables for:
-
-- `elements`
-- `properties`
-- `types`
-
-This design reduces duplication and keeps the element information consistent and maintainable.
-
-## Requirements covered by this project
-
-The project implements the expected freeCodeCamp tasks, including:
-
-- renaming and normalizing columns
-- adding unique and not-null constraints
-- creating a `types` table and linking it through `type_id`
-- updating element values and formatting
-- adding missing elements
-- creating a CLI script for querying the database
-
-## Local development and validation
-
-To validate the script locally:
+You can quickly validate the project with the following commands:
 
 ```bash
 chmod +x element.sh
@@ -137,6 +136,16 @@ chmod +x element.sh
 ./element.sh Oxygen
 ./element.sh 999
 ```
+
+## Notes
+
+This project is a practical example of combining relational database design with a lightweight Bash interface. It is useful for learning:
+
+- PostgreSQL schema creation
+- data normalization
+- foreign key relationships
+- SQL querying
+- shell-based database interaction
 
 ## License
 
