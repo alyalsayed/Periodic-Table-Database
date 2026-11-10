@@ -1,57 +1,148 @@
 # Periodic Table Database
 
-This is the result to complete the Periodic Table Database project. 
-Instructions for building this project can be found at 
-[https://www.freecodecamp.org/learn/relational-database/build-a-periodic-table-database-project/build-a-periodic-table-database](https://www.freecodecamp.org/learn/relational-database/build-a-periodic-table-database-project/build-a-periodic-table-database)
+A PostgreSQL-backed database project and shell utility for querying chemical element data. This project was built as part of the freeCodeCamp Relational Database curriculum and includes a normalized periodic table database plus a command-line script to fetch element details by atomic number, symbol, or name.
 
-## Instructions
-You are started with a `periodic_table` database that has information about some chemical elements. You can connect to it by entering `psql --username=freecodecamp --dbname=periodic_table` in the terminal. You may want to get a little familiar with the existing `tables`, `columns`, and `rows`. Read the instructions below and complete user stories to finish the project. Certain tests may not pass until other user stories are complete. Good luck!
+## Overview
 
-Part 1: Fix the database
+This project includes:
 
-There are some mistakes in the `database` that need to be fixed or changed. See the user stories below for what to change.
+- a PostgreSQL database named `periodic_table`
+- normalized tables for elements, properties, and element types
+- a Bash script, `element.sh`, that looks up data from the database
+- validation rules and data cleanup tasks from the freeCodeCamp project requirements
 
-Part 2: Create your git repository
+## Features
 
-You need to make a small `bash` program. The code needs to be `version controlled` with git, so you will need to turn the suggested folder into a `git repository`.
+- Query an element by atomic number, symbol, or name
+- Return detailed element information including:
+  - atomic number
+  - symbol
+  - name
+  - element type
+  - atomic mass
+  - melting point
+  - boiling point
+- Handle invalid or missing inputs with a friendly error message
+- Work with a properly normalized relational database schema
 
-Part 3: Create the script
+## Project structure
 
-Lastly, you need to make a script that accepts an argument in the form of an `atomic number`, `symbol`, or `name` of an element and outputs some information about the given element. In your script, you can create a PSQL variable for querying the database like this: `PSQL="psql --username=freecodecamp --dbname=<database_name> -t --no-align -c"`, add more flags if you need to.
+```text
+.
+├── periodic_table.sql   # Database dump / schema data
+├── element.sh           # Bash script to query the database
+├── README.md            # Project documentation
+└── .gitignore           # Git metadata (if present in your local repo)
+```
 
-Notes:
-If you leave your virtual machine, your database may not be saved. You can make a dump of it by entering `pg_dump -cC --inserts -U freecodecamp periodic_table > periodic_table.sql` in a bash terminal (not the psql one). It will save the commands to rebuild your database in periodic_table.sql. The file will be located where the command was entered. If it's anything inside the `project` folder, the file will be saved in the VM. You can rebuild the database by entering `psql -U postgres < periodic_table.sql` in a terminal where the `.sql` file is.
+## Database setup
 
-If you are saving your progress on [freeCodeCamp.org](https://www.freecodecamp.org/), after getting all the tests to pass, follow the instructions above to save a dump of your database. Save the periodic_table.sql file, as well as the final version of your element.sh file, in a public repository and submit the URL to it on [freeCodeCamp.org](https://www.freecodecamp.org/).
+To connect to the database:
 
-## Tasks 
-1. Rename the `weight` column to `atomic_mass`.
-2. Rename the `melting_point` column to `melting_point_celsius` and the `boiling_point` column to `boiling_point_celsius`.
-3. `melting_point_celsius` and `boiling_point_celsius` columns should not accept `null` values.
-4. Add the `UNIQUE` constraint to the `symbol` and `name` columns from the elements table.
-5. `symbol` and `name` columns should have the `NOT NULL` constraint.
-6. Set the `atomic_number` column from the `properties` table as a `foreign key` that references the column of the same name in the `elements` table.
-7. Create a `types` table that will store the three types of `elements`.
-8. `types` table should have a `type_id` column that is an `integer` and the `primary key`.
-9. `types` table should have a `type` column that's a `VARCHAR` and cannot be `null`. It will store the different types from the type column in the `properties` table.
-10. Add three rows to your `types` table whose values are the three different `types` from the `properties` table.
-11. `properties` table should have a `type_id` `foreign key` column that references the `type_id` column from the `types` table. It should be an `INT` with the `NOT NULL` constraint.
-12. Each row in `properties` table should have a `type_id` value that links to the correct `type` from the `types` table.
-13. Capitalize the `first letter` of all the `symbol` values in the `elements` table. Be careful to only capitalize the `letter` and not change any others.
-14. Remove all the `trailing zeros` after the `decimals` from each row of the `atomic_mass` column. You may need to adjust a data type to `DECIMAL` for this. The final values they should be are in the `atomic_mass.txt` file.
-15. You should add the `element` with `atomic number` 9 to your database. Its `name` is Fluorine, `symbol` is F, `mass` is 18.998, `melting point` is -220, `boiling point` is -188.1, and it's a `nonmetal`.
-16. Add the element with `atomic number` 10 to your database. Its `name` is Neon, `symbol` is Ne, `mass` is 20.18, `melting point` is -248.6, `boiling point` is -246.1, and it's a `nonmetal`.
-17. Create a `periodic_table` folder in the `project` folder and turn it into a `git` repository with `git init`.
-18. Your `repository` should have a `main` branch with all your commits.
-19. `periodic_table` repo should have at least `five commits`.
-20. Create an `element.sh` file in your repo folder for each program.
-21. `script (.sh)` file should have executable permissions.
-22. If user run `./element.sh`, it should output only `Please provide an element as an argument`. and finish running.
-23. If user run `./element.sh 1`, `./element.sh H`, or `./element.sh Hydrogen`, it should output only `The element with atomic number 1 is Hydrogen (H). It's a nonmetal, with a mass of 1.008 amu. Hydrogen has a melting point of -259.1 celsius and a boiling point of -252.9 celsius`.
-24. If user run `./element.sh` script with `another element` as input, it should get the `same output` but with information `associated` with the `given element`.
-25. If the argument input to `element.sh` script doesn't exist as an `atomic_number`, `symbol`, or `name` in the database, the only output should be `I could not find that element in the database`.
-26. The message for the `first commit` in the repo should be `Initial commit`.
-27. The rest of the commit messages should start with `fix:`, `feat:`, `refactor:`, `chore:`, or `test:`.
-28. Delete the `non existent element`, whose `atomic_number` is 1000, from the `two tables`.
-29. `properties` table should not have a `type` column.
-30. Finish the project while on the `main branch`. The `working tree` should be `clean` and it should not have any `uncommitted changes`.
+```bash
+psql --username=freecodecamp --dbname=periodic_table
+```
+
+You can also restore the project database structure and data from the SQL dump:
+
+```bash
+psql -U freecodecamp -d periodic_table < periodic_table.sql
+```
+
+## Script usage
+
+The script accepts one argument:
+
+- atomic number
+- element symbol
+- element name
+
+### Examples
+
+```bash
+./element.sh 1
+./element.sh H
+./element.sh Hydrogen
+```
+
+### Example output
+
+```text
+The element with atomic number 1 is Hydrogen (H). It's a nonmetal, with a mass of 1.008 amu. Hydrogen has a melting point of -259.1 celsius and a boiling point of -252.9 celsius.
+```
+
+### No argument
+
+```bash
+./element.sh
+```
+
+Output:
+
+```text
+Please provide an element as an argument.
+```
+
+### Element not found
+
+```bash
+./element.sh 999
+```
+
+Output:
+
+```text
+I could not find that element in the database.
+```
+
+## Script behavior
+
+The `element.sh` script performs the following:
+
+1. checks whether an argument was provided
+2. determines whether the input is an atomic number, element symbol, or name
+3. runs a SQL query against the `periodic_table` database
+4. prints the matching element details
+5. returns a clear error when no matching element exists
+
+## Database design notes
+
+The database is normalized to include separate tables for:
+
+- `elements`
+- `properties`
+- `types`
+
+This design reduces duplication and keeps the element information consistent and maintainable.
+
+## Requirements covered by this project
+
+The project implements the expected freeCodeCamp tasks, including:
+
+- renaming and normalizing columns
+- adding unique and not-null constraints
+- creating a `types` table and linking it through `type_id`
+- updating element values and formatting
+- adding missing elements
+- creating a CLI script for querying the database
+
+## Local development and validation
+
+To validate the script locally:
+
+```bash
+chmod +x element.sh
+./element.sh 1
+./element.sh H
+./element.sh Oxygen
+./element.sh 999
+```
+
+## License
+
+This project is released under the MIT license.
+
+## Related
+
+- freeCodeCamp Relational Database
+- Periodic Table Database project
